@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TecMonkey — Cognição Computacional & Agentes Conversacionais</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0b0f1a;
+      --panel: #101a2a;
+      --panel2:#0f1626;
+      --text:#e9eefc;
+      --muted:#b7c3df;
+      --brand:#4da3ff;
+      --ring: rgba(77,163,255,.35);
+      --shadow: 0 16px 40px rgba(0,0,0,.45);
+      --border: rgba(255,255,255,.06);
+      --radius: 16px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(77,163,255,.12), transparent 60%),
+                  radial-gradient(900px 700px at 80% 30%, rgba(120,87,255,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .container{ width:min(1100px, 92%); margin:0 auto; }
+
+    /* Top bar */
+    .topbar{
+      position:fixed;
+      inset:0 0 auto 0;
+      z-index:50;
+      background: rgba(11,15,26,.55);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar .inner{
+      height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:600;
+      letter-spacing:.2px;
+    }
+    .logo{
+      width:34px;height:34px;border-radius:10px;
+      background: linear-gradient(135deg, rgba(77,163,255,.9), rgba(120,87,255,.85));
+      box-shadow: 0 10px 25px rgba(77,163,255,.18);
+      position:relative;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:8px;
+      border-radius:8px;
+      background: rgba(11,15,26,.55);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    nav{
+      display:flex; gap:18px;
+      font-size:.95rem;
+      color:var(--muted);
+    }
+    nav a{ opacity:.9; transition:opacity .2s ease, transform .2s ease; }
+    nav a:hover{ opacity:1; transform:translateY(-1px); color:var(--text); }
+
+    /* Hero */
+    header.hero{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      padding-top:64px; /* topbar */
+      position:relative;
+      isolation:isolate;
+    }
+
+    .hero-bg{
+      position:absolute; inset:0;
+      background:
+        linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.78)),
+        url("https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop") center/cover;
+      z-index:-2;
+    }
+
+    /* subtle animated glow */
+    .glow{
+      position:absolute;
+      width:520px; height:520px;
+      border-radius:50%;
+      filter: blur(50px);
+      background: radial-gradient(circle at 30% 30%, rgba(77,163,255,.26), transparent 60%),
+                  radial-gradient(circle at 70% 70%, rgba(120,87,255,.18), transparent 55%);
+      z-index:-1;
+      animation: float 10s ease-in-out infinite;
+      opacity:.85;
+    }
+    .glow.one{ left:-160px; top:120px; }
+    .glow.two{ right:-180px; bottom:120px; animation-delay:-3s; }
+
+    @keyframes float{
+      0%,100%{ transform: translate3d(0,0,0) scale(1); }
+      50%{ transform: translate3d(0,-16px,0) scale(1.03); }
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:34px;
+      align-items:center;
+      padding:64px 0;
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(16,26,42,.55);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size:.92rem;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: var(--brand);
+      box-shadow: 0 0 0 6px rgba(77,163,255,.18);
+    }
+
+    h1{
+      margin:14px 0 12px;
+      font-size: clamp(2.2rem, 5vw, 3.35rem);
+      line-height:1.12;
+      letter-spacing:-.6px;
+    }
+
+    .subtitle{
+      color:#cfe0ff;
+      font-size: clamp(1.02rem, 2vw, 1.25rem);
+      max-width: 720px;
+    }
+
+    .cta{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-top:26px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      padding:12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(16,26,42,.65);
+      color: var(--text);
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+      will-change: transform;
+    }
+    .btn:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+      border-color: rgba(77,163,255,.35);
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(77,163,255,.95), rgba(120,87,255,.85));
+      border-color: rgba(255,255,255,.12);
+    }
+    .btn.primary:hover{
+      box-shadow: 0 18px 45px rgba(77,163,255,.18);
+    }
+
+    .hero-card{
+      background: rgba(16,26,42,.55);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding:18px;
+      box-shadow: 0 18px 55px rgba(0,0,0,.35);
+      transform: translateZ(0);
+    }
+    .hero-card img{
+      width:100%;
+      height:240px;
+      object-fit:cover;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .hero-card .meta{
+      margin-top:14px;
+      color: var(--muted);
+      font-size:.95rem;
+    }
+
+    /* Sections */
+    section{ padding:82px 0; }
+    section.alt{ background: rgba(15,22,38,.55); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+
+    .section-title{
+      text-align:center;
+      font-size: clamp(1.7rem, 3vw, 2.1rem);
+      margin:0 0 14px;
+    }
+    .section-desc{
+      text-align:center;
+      color:var(--muted);
+      max-width: 880px;
+      margin: 0 auto 44px;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:22px;
+    }
+    .card{
+      background: rgba(16,26,42,.65);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding:18px;
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+      will-change: transform;
+    }
+    .card:hover{
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+      border-color: rgba(77,163,255,.28);
+    }
+    .card img{
+      width:100%;
+      height:160px;
+      object-fit:cover;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      margin-bottom:14px;
+    }
+    .card h3{ margin:0 0 8px; font-size:1.12rem; }
+    .card p{ margin:0; color:var(--muted); }
+
+    .bullets{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+      gap:18px;
+    }
+    .bullet{
+      border:1px solid var(--border);
+      background: rgba(16,26,42,.45);
+      border-radius: var(--radius);
+      padding:16px 16px;
+    }
+    .bullet h3{ margin:0 0 6px; font-size:1.05rem; }
+    .bullet p{ margin:0; color:var(--muted); }
+
+    footer{
+      padding:28px 0;
+      border-top:1px solid var(--border);
+      background: rgba(5,7,13,.9);
+      color:#b8c2d8;
+      text-align:center;
+      font-size:.92rem;
+    }
+
+    /* Scroll reveal animations */
+    .reveal{
+      opacity:0;
+      transform: translateY(14px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.show{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      html{ scroll-behavior:auto; }
+      .glow{ animation:none; }
+      .reveal{ transition:none; }
+      .btn, .card{ transition:none; }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px){
+      .hero-grid{ grid-template-columns: 1fr; }
+      nav{ display:none; }
+      .hero-card img{ height:220px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="container inner">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span>TecMonkey</span>
+      </div>
+
+      <nav aria-label="Navegação">
+        <a href="#sobre">Sobre</a>
+        <a href="#solucoes">Soluções</a>
+        <a href="#diferenciais">Diferenciais</a>
+        <a href="#contato">Contato</a>
+      </nav>
+
+      <a class="btn" href="#contato">Falar com a TecMonkey</a>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="glow one" aria-hidden="true"></div>
+    <div class="glow two" aria-hidden="true"></div>
+
+    <div class="container hero-grid">
+      <div class="reveal">
+        <div class="kicker"><span class="dot"></span> IA aplicada • agentes • automação</div>
+        <h1>Cognição computacional e agentes conversacionais para acelerar seu negócio.</h1>
+        <p class="subtitle">
+          A <strong>TecMonkey Serviços de Software Ltda</strong> cria soluções com Inteligência Artificial,
+          integrações e automação inteligente — do atendimento ao backoffice — com foco em resultado,
+          segurança e escalabilidade.
+        </p>
+
+        <div class="cta">
+          <a class="btn primary" href="#solucoes">Ver soluções</a>
+          <a class="btn" href="#sobre">Conhecer a empresa</a>
+        </div>
+      </div>
+
+      <div class="hero-card reveal">
+        <img
+          src="https://images.unsplash.com/photo-1677756119517-756a188d2d94?q=80&w=2070&auto=format&fit=crop"
+          alt="Imagem de tecnologia e IA"
+          loading="lazy"
+        />
+        <div class="meta">
+          <strong>Foco:</strong> agentes conversacionais, RAG, automação e integrações.<br>
+          <strong>Entrega:</strong> rápido, modular e com governança.
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="sobre">
+      <div class="container">
+        <h2 class="section-title reveal">Sobre a Empresa</h2>
+        <p class="section-desc reveal">
+          Desenvolvemos sistemas cognitivos que entendem contexto, executam tarefas e conectam canais
+          (WhatsApp, web, APIs e CRMs) para melhorar experiência e produtividade.
+        </p>
+
+        <div class="bullets">
+          <div class="bullet reveal">
+            <h3>🧠 Arquitetura Cognitiva</h3>
+            <p>Modelos de linguagem e agentes para raciocínio, ferramentas e execução.</p>
+          </div>
+          <div class="bullet reveal">
+            <h3>🔗 Integrações</h3>
+            <p>APIs, ERPs, CRMs, bases e automações, sem travar seu legado.</p>
+          </div>
+          <div class="bullet reveal">
+            <h3>🛡️ Segurança</h3>
+            <p>Boas práticas de autenticação, logs e controle de acesso por perfil.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="solucoes" class="alt">
+      <div class="container">
+        <h2 class="section-title reveal">Soluções</h2>
+        <p class="section-desc reveal">
+          Aplicações reais de IA para atendimento, operações e análise.
+        </p>
+
+        <div class="cards">
+          <article class="card reveal">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2070&auto=format&fit=crop"
+                 alt="Agentes conversacionais" loading="lazy">
+            <h3>Agentes Conversacionais</h3>
+            <p>Assistentes inteligentes para WhatsApp e Web com fluxo, contexto e integrações.</p>
+          </article>
+
+          <article class="card reveal">
+            <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=2070&auto=format&fit=crop"
+                 alt="Cognição computacional" loading="lazy">
+            <h3>Cognição Computacional</h3>
+            <p>Automação com tomada de decisão, roteamento e execução de tarefas.</p>
+          </article>
+
+          <article class="card reveal">
+            <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2070&auto=format&fit=crop"
+                 alt="Automação e integrações" loading="lazy">
+            <h3>Automação & Integrações</h3>
+            <p>Conectamos IA a sistemas e dados para reduzir custo e tempo de resposta.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="diferenciais">
+      <div class="container">
+        <h2 class="section-title reveal">Diferenciais</h2>
+        <p class="section-desc reveal">
+          Um jeito pragmático de levar IA pra produção.
+        </p>
+
+        <div class="cards">
+          <div class="card reveal">
+            <h3>⚡ IA aplicada ao negócio</h3>
+            <p>Menos demo, mais entrega: foco em impacto e métrica.</p>
+          </div>
+          <div class="card reveal">
+            <h3>🧩 Modular e escalável</h3>
+            <p>Componentes independentes para evoluir sem reescrever tudo.</p>
+          </div>
+          <div class="card reveal">
+            <h3>📈 Operação e governança</h3>
+            <p>Observabilidade, logs e padrões para manutenção e segurança.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" class="alt">
+      <div class="container">
+        <h2 class="section-title reveal">Contato</h2>
+        <p class="section-desc reveal">
+          Quer uma landing com seu WhatsApp/e-mail e formulário? Eu incluo rapidinho.
+        </p>
+
+        <div class="cards">
+          <div class="card reveal">
+            <h3>📩 Próximo passo</h3>
+            <p>Me diga o e-mail e/ou WhatsApp de contato que você quer exibir no site.</p>
+          </div>
+          <div class="card reveal">
+            <h3>🧪 POC rápida</h3>
+            <p>Podemos montar um protótipo de agente conversacional com integração.</p>
+          </div>
+          <div class="card reveal">
+            <h3>🧠 Estratégia</h3>
+            <p>Mapeamento de processos e plano de automação com IA.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    TecMonkey Serviços de Software Ltda<br>
+    CNPJ: 37.123.698/0001-42
+  </footer>
+
+  <script>
+    // Scroll reveal (IntersectionObserver)
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add('show');
+      });
+    }, { threshold: 0.12 });
+
+    els.forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
