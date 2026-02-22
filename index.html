@@ -17,7 +17,6 @@
       --text:#e9eefc;
       --muted:#b7c3df;
       --brand:#4da3ff;
-      --ring: rgba(77,163,255,.35);
       --shadow: 0 16px 40px rgba(0,0,0,.45);
       --border: rgba(255,255,255,.06);
       --radius: 16px;
@@ -178,6 +177,10 @@
       cursor:pointer;
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
       will-change: transform;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
     }
     .btn:hover{
       transform: translateY(-2px);
@@ -190,6 +193,12 @@
     }
     .btn.primary:hover{
       box-shadow: 0 18px 45px rgba(77,163,255,.18);
+    }
+    .btn:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+      transform:none !important;
+      box-shadow:none !important;
     }
 
     .hero-card{
@@ -272,6 +281,41 @@
     .bullet h3{ margin:0 0 6px; font-size:1.05rem; }
     .bullet p{ margin:0; color:var(--muted); }
 
+    /* Chatbox */
+    .chatbox{
+      border:1px solid var(--border);
+      background: rgba(16,26,42,.55);
+      border-radius: var(--radius);
+      padding:18px;
+    }
+    .chat-messages{
+      height:260px;
+      overflow:auto;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(16,26,42,.45);
+    }
+    .chat-form{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+    .chat-input{
+      flex:1;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(16,26,42,.65);
+      color:var(--text);
+      outline:none;
+    }
+    .chat-status{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
     footer{
       padding:28px 0;
       border-top:1px solid var(--border);
@@ -305,6 +349,7 @@
       .hero-grid{ grid-template-columns: 1fr; }
       nav{ display:none; }
       .hero-card img{ height:220px; }
+      .chat-form{ flex-direction:column; }
     }
   </style>
 </head>
@@ -447,40 +492,24 @@
 
     <section id="contato" class="alt">
       <div class="container">
-        <div class="chatbox reveal" style="margin-top:22px;">
-  <h3 style="margin:0 0 10px;">Chat (IA)</h3>
+        <h2 class="section-title reveal">Contato</h2>
+        <p class="section-desc reveal">
+          Teste abaixo um mini chat que consulta seu endpoint (Worker).
+        </p>
 
-  <div id="chat-messages"
-       style="height:260px; overflow:auto; padding:12px; border-radius:12px;
-              border:1px solid rgba(255,255,255,.08);
-              background:rgba(16,26,42,.55);">
-    <div style="color:#b7c3df;">Digite uma pergunta para testar o agente.</div>
-  </div>
+        <div class="chatbox reveal">
+          <h3 style="margin:0 0 10px;">Chat (IA)</h3>
 
-  <form id="chat-form" style="display:flex; gap:10px; margin-top:12px;">
-    <input id="chat-input" type="text" placeholder="Ex: O que é um chatbot?"
-           style="flex:1; padding:12px 12px; border-radius:12px;
-                  border:1px solid rgba(255,255,255,.10);
-                  background:rgba(16,26,42,.65); color:#e9eefc; outline:none;">
-    <button class="btn primary" type="submit">Enviar</button>
-  </form>
-
-  <div id="chat-status" style="margin-top:8px; color:#b7c3df; font-size:.9rem;"></div>
-</div>
-
-        <div class="cards">
-          <div class="card reveal">
-            <h3>📩 Próximo passo</h3>
-            <p>Me diga o e-mail e/ou WhatsApp de contato que você quer exibir no site.</p>
+          <div id="chat-messages" class="chat-messages">
+            <div style="color:#b7c3df;">Digite uma pergunta para testar o agente.</div>
           </div>
-          <div class="card reveal">
-            <h3>🧪 POC rápida</h3>
-            <p>Podemos montar um protótipo de agente conversacional com integração.</p>
-          </div>
-          <div class="card reveal">
-            <h3>🧠 Estratégia</h3>
-            <p>Mapeamento de processos e plano de automação com IA.</p>
-          </div>
+
+          <form id="chat-form" class="chat-form">
+            <input id="chat-input" class="chat-input" type="text" placeholder="Ex: O que é um chatbot?" autocomplete="off">
+            <button id="chat-send" class="btn primary" type="submit">Enviar</button>
+          </form>
+
+          <div id="chat-status" class="chat-status"></div>
         </div>
       </div>
     </section>
@@ -499,92 +528,93 @@
         if (e.isIntersecting) e.target.classList.add('show');
       });
     }, { threshold: 0.12 });
-
     els.forEach(el => io.observe(el));
+
+    // === MINI CHAT -> Worker endpoint ===
+    // Obs: se der erro no navegador por CORS, você precisa liberar no Worker:
+    // Access-Control-Allow-Origin: *  (ou seu domínio)
+    const ENDPOINT = "https://bobcrock.pmateiro.workers.dev/";
+
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("chat-input");
+    const sendBtn = document.getElementById("chat-send");
+    const messages = document.getElementById("chat-messages");
+    const statusEl = document.getElementById("chat-status");
+
+    function addMsg(role, text) {
+      const wrap = document.createElement("div");
+      wrap.style.margin = "10px 0";
+      wrap.style.padding = "10px 12px";
+      wrap.style.borderRadius = "12px";
+      wrap.style.border = "1px solid rgba(255,255,255,.08)";
+      wrap.style.background = role === "user"
+        ? "rgba(77,163,255,.10)"
+        : "rgba(255,255,255,.04)";
+
+      const who = document.createElement("div");
+      who.style.fontSize = ".85rem";
+      who.style.color = "rgba(233,238,252,.85)";
+      who.style.marginBottom = "6px";
+      who.textContent = role === "user" ? "Você" : "IA";
+
+      const body = document.createElement("div");
+      body.style.whiteSpace = "pre-wrap";
+      body.textContent = text;
+
+      wrap.appendChild(who);
+      wrap.appendChild(body);
+      messages.appendChild(wrap);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function askLLM(prompt) {
+      const url = ENDPOINT + "?prompt=" + encodeURIComponent(prompt);
+      const res = await fetch(url, { method: "GET" });
+
+      if (!res.ok) {
+        const t = await res.text().catch(() => "");
+        throw new Error(`HTTP ${res.status} ${t}`.trim());
+      }
+
+      // Seu Worker geralmente retorna JSON.
+      const data = await res.json();
+
+      // Tenta extrair texto de formatos comuns
+      const r = data?.response;
+
+      if (typeof r === "string") return r;
+      if (r?.response && typeof r.response === "string") return r.response;
+      if (r?.output_text && typeof r.output_text === "string") return r.output_text;
+      if (r?.result && typeof r.result === "string") return r.result;
+
+      // fallback: mostra JSON inteiro
+      return JSON.stringify(data, null, 2);
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const prompt = (input.value || "").trim();
+      if (!prompt) return;
+
+      addMsg("user", prompt);
+      input.value = "";
+      input.focus();
+
+      statusEl.textContent = "Respondendo...";
+      sendBtn.disabled = true;
+
+      try {
+        const answer = await askLLM(prompt);
+        addMsg("assistant", answer);
+        statusEl.textContent = "";
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Erro ao consultar o endpoint (ver console).";
+        addMsg("assistant", "⚠️ Não consegui consultar o endpoint agora. Verifique CORS / logs do Worker.");
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
   </script>
-  <script>
-  // === MINI CHAT -> Worker endpoint ===
-  const ENDPOINT = "https://bobcrock.pmateiro.workers.dev/";
-
-  const form = document.getElementById("chat-form");
-  const input = document.getElementById("chat-input");
-  const messages = document.getElementById("chat-messages");
-  const statusEl = document.getElementById("chat-status");
-
-  function addMsg(role, text) {
-    const wrap = document.createElement("div");
-    wrap.style.margin = "10px 0";
-    wrap.style.padding = "10px 12px";
-    wrap.style.borderRadius = "12px";
-    wrap.style.border = "1px solid rgba(255,255,255,.08)";
-    wrap.style.background = role === "user"
-      ? "rgba(77,163,255,.10)"
-      : "rgba(255,255,255,.04)";
-
-    const who = document.createElement("div");
-    who.style.fontSize = ".85rem";
-    who.style.color = "rgba(233,238,252,.85)";
-    who.style.marginBottom = "6px";
-    who.textContent = role === "user" ? "Você" : "IA";
-
-    const body = document.createElement("div");
-    body.style.whiteSpace = "pre-wrap";
-    body.textContent = text;
-
-    wrap.appendChild(who);
-    wrap.appendChild(body);
-    messages.appendChild(wrap);
-    messages.scrollTop = messages.scrollHeight;
-  }
-
-  async function askLLM(prompt) {
-    const url = ENDPOINT + "?prompt=" + encodeURIComponent(prompt);
-    const res = await fetch(url, { method: "GET" });
-
-    if (!res.ok) {
-      const t = await res.text().catch(() => "");
-      throw new Error(`HTTP ${res.status} ${t}`.trim());
-    }
-
-    // seu Worker retorna JSON (ex: { received_prompt, response })
-    const data = await res.json();
-
-    // tenta achar o texto de forma robusta (depende do formato do AI.run)
-    // - se for string direta, pega
-    // - se vier em algum campo comum, tenta extrair
-    const r = data?.response;
-
-    if (typeof r === "string") return r;
-
-    // alguns modelos retornam { response: "..."} ou { output_text: "..."} etc
-    if (r?.response && typeof r.response === "string") return r.response;
-    if (r?.output_text && typeof r.output_text === "string") return r.output_text;
-    if (r?.result && typeof r.result === "string") return r.result;
-
-    // fallback: mostra JSON inteiro
-    return JSON.stringify(data, null, 2);
-  }
-
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const prompt = (input.value || "").trim();
-    if (!prompt) return;
-
-    addMsg("user", prompt);
-    input.value = "";
-    input.focus();
-
-    statusEl.textContent = "Respondendo...";
-    try {
-      const answer = await askLLM(prompt);
-      addMsg("assistant", answer);
-      statusEl.textContent = "";
-    } catch (err) {
-      statusEl.textContent = "Erro ao consultar o endpoint (veja console).";
-      console.error(err);
-      addMsg("assistant", "⚠️ Não consegui consultar o endpoint agora. Verifique CORS / logs do Worker.");
-    }
-  });
-</script>
 </body>
 </html>
