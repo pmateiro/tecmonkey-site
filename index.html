@@ -8,96 +8,115 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
+    /* Estilos originais preservados */
+    body{ margin:0; font-family:'Poppins',sans-serif; background:#0b0f1a; color:white; overflow-x: hidden; }
+    header{ height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.8)), url("https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop") center/cover; }
+    h1{ font-size:3rem; margin-bottom:10px; }
+    .subtitle{ font-size:1.3rem; color:#9cc9ff; max-width:700px; }
+    section{ padding:80px 10%; }
+    .section-dark{ background:#0f1626; }
+    .cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:30px; }
+    .card{ background:#121a2f; padding:25px; border-radius:12px; transition:.3s; }
+    .card:hover{ transform:translateY(-6px); box-shadow:0 10px 30px rgba(0,0,0,.4); }
+    .card img{ width:100%; border-radius:10px; margin-bottom:15px; }
+    h2{ text-align:center; margin-bottom:40px; font-size:2rem; }
+    footer{ background:#05070d; text-align:center; padding:30px; font-size:.9rem; color:#bbb; }
+    .highlight{ color:#4da3ff; }
+    .contact-link { color: #4da3ff; text-decoration: none; font-weight: 600; }
 
-body{
-    margin:0;
-    font-family:'Poppins',sans-serif;
-    background:#0b0f1a;
-    color:white;
-}
+    /* --- ESTILOS DO CHATSTICK --- */
+    #chat-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
 
-header{
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.8)),
-    url("https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop") center/cover;
-}
+    /* Ícone Pulsante */
+    #chat-trigger {
+        width: 60px;
+        height: 60px;
+        background: #4da3ff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(77, 163, 255, 0.4);
+        animation: pulse 2s infinite;
+    }
 
-h1{
-    font-size:3rem;
-    margin-bottom:10px;
-}
+    @keyframes pulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(77, 163, 255, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(77, 163, 255, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(77, 163, 255, 0); }
+    }
 
-.subtitle{
-    font-size:1.3rem;
-    color:#9cc9ff;
-    max-width:700px;
-}
+    /* Janela de Chat */
+    #chat-box {
+        width: 320px;
+        height: 450px;
+        background: #121a2f;
+        border: 1px solid #1e2a47;
+        border-radius: 15px;
+        display: none; /* Escondido por padrão */
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        margin-bottom: 15px;
+    }
 
-section{
-    padding:80px 10%;
-}
+    #chat-header {
+        background: #1e2a47;
+        padding: 15px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+    }
 
-.section-dark{
-    background:#0f1626;
-}
+    #chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 0.85rem;
+    }
 
-.cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:30px;
-}
+    .msg { padding: 8px 12px; border-radius: 10px; max-width: 80%; line-height: 1.4; }
+    .msg-user { background: #4da3ff; align-self: flex-end; color: white; }
+    .msg-bot { background: #1e2a47; align-self: flex-start; }
 
-.card{
-    background:#121a2f;
-    padding:25px;
-    border-radius:12px;
-    transition:.3s;
-}
+    #chat-input-area {
+        padding: 10px;
+        background: #0b0f1a;
+        display: flex;
+        gap: 5px;
+    }
 
-.card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 10px 30px rgba(0,0,0,.4);
-}
+    #chat-input {
+        flex: 1;
+        background: #121a2f;
+        border: 1px solid #1e2a47;
+        color: white;
+        padding: 8px;
+        border-radius: 5px;
+        outline: none;
+    }
 
-.card img{
-    width:100%;
-    border-radius:10px;
-    margin-bottom:15px;
-}
-
-h2{
-    text-align:center;
-    margin-bottom:40px;
-    font-size:2rem;
-}
-
-footer{
-    background:#05070d;
-    text-align:center;
-    padding:30px;
-    font-size:.9rem;
-    color:#bbb;
-}
-
-.highlight{
-    color:#4da3ff;
-}
-
-.contact-link {
-    color: #4da3ff;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.contact-link:hover {
-    text-decoration: underline;
-}
-
+    #chat-send {
+        background: #4da3ff;
+        border: none;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 </style>
 </head>
 
@@ -107,86 +126,109 @@ footer{
     <h1>TecMonkey</h1>
     <p class="subtitle">
         Especialistas em <span class="highlight">cognição computacional</span> e 
-        <span class="highlight">agentes conversacionais inteligentes</span>,
-        criando soluções de software baseadas em Inteligência Artificial
-        para transformar negócios.
+        <span class="highlight">agentes conversacionais inteligentes</span>.
     </p>
 </header>
 
 <section>
     <h2>Sobre a Empresa</h2>
     <p style="max-width:900px;margin:auto;text-align:center;">
-        A TecMonkey Serviços de Software Ltda é uma empresa especialista em cognição computacional
-        e agentes conversacionais. Desenvolvemos soluções baseadas em Inteligência Artificial,
-        automação inteligente e sistemas conversacionais capazes de compreender contexto,
-        executar tarefas e melhorar a experiência digital de clientes e empresas.
+        Desenvolvemos soluções baseadas em Inteligência Artificial para melhorar a experiência digital.
     </p>
 </section>
 
 <section class="section-dark">
     <h2>Soluções</h2>
-
     <div class="cards">
-
         <div class="card">
-            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2070&auto=format&fit=crop">
             <h3>Agentes Conversacionais</h3>
-            <p>Chatbots e assistentes inteligentes integrados a WhatsApp, Web e sistemas corporativos. Solicite uma demonstração em <a href="mailto:contato@tecmonkey.io" class="contact-link">contato@tecmonkey.io</a>.</p>
+            <p>Solicite uma demonstração em <a href="mailto:contato@tecmonkey.io" class="contact-link">contato@tecmonkey.io</a>.</p>
         </div>
-
         <div class="card">
-            <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=2070&auto=format&fit=crop">
             <h3>Cognição Computacional</h3>
-            <p>Sistemas capazes de interpretar dados, contexto e intenção para tomada de decisão automatizada.</p>
+            <p>Sistemas capazes de interpretar dados e intenção.</p>
         </div>
-
         <div class="card">
-            <img src="https://images.unsplash.com/photo-1677756119517-756a188d2d94?q=80&w=2070&auto=format&fit=crop">
             <h3>Automação Inteligente</h3>
-            <p>Integração entre IA, APIs e processos empresariais para ganho real de produtividade.</p>
-        </div>
-
-    </div>
-</section>
-
-<section>
-    <h2>Diferenciais</h2>
-
-    <div class="cards">
-        <div class="card">
-            <h3>⚡ IA aplicada ao negócio</h3>
-            <p>Soluções práticas focadas em resultado e eficiência operacional.</p>
-        </div>
-
-        <div class="card">
-            <h3>🔗 Integração completa</h3>
-            <p>Conectamos IA com sistemas existentes sem necessidade de grandes mudanças.</p>
-        </div>
-
-        <div class="card">
-            <h3>🧠 Arquitetura Cognitiva</h3>
-            <p>Uso de modelos avançados de linguagem e agentes autônomos. Saiba mais através de <a href="mailto:contato@tecmonkey.io" class="contact-link">contato@tecmonkey.io</a>.</p>
+            <p>Integração entre IA e processos empresariais.</p>
         </div>
     </div>
-
 </section>
 
 <section class="section-dark">
     <h2>Contato</h2>
     <p style="text-align:center;">
-        Entre em contato para conhecer soluções personalizadas em Inteligência Artificial
-        e automação conversacional através do e-mail: <br>
-        <a href="mailto:contato@tecmonkey.io" class="contact-link" style="font-size: 1.5rem;">contato@tecmonkey.io</a>
+        E-mail: <a href="mailto:contato@tecmonkey.io" class="contact-link">contato@tecmonkey.io</a>
     </p>
 </section>
 
 <footer>
-    <p>
-        TecMonkey Serviços de Software Ltda<br>
-        CNPJ: 37.123.698/0001-42<br>
-        E-mail: contato@tecmonkey.io
-    </p>
+    <p>TecMonkey Serviços de Software Ltda | CNPJ: 37.123.698/0001-42</p>
 </footer>
+
+<div id="chat-container">
+    <div id="chat-box">
+        <div id="chat-header">
+            <span>TecMonkey Assistant</span>
+            <span style="cursor:pointer" onclick="toggleChat()">✕</span>
+        </div>
+        <div id="chat-messages">
+            <div class="msg msg-bot">Olá! Como posso ajudar você hoje?</div>
+        </div>
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Digite sua pergunta...">
+            <button id="chat-send">Sair</button>
+        </div>
+    </div>
+    <div id="chat-trigger" onclick="toggleChat()">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chat-box');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+
+    function toggleChat() {
+        chatBox.style.display = chatBox.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    async function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        // Adiciona mensagem do usuário na tela
+        appendMessage(text, 'user');
+        chatInput.value = '';
+
+        try {
+            // Chamada ao seu endpoint
+            // Nota: O endpoint foi formatado para incluir o texto do usuário no parâmetro prompt
+            const response = await fetch(`https://bobcrock.pmateiro.workers.dev/prompt=${encodeURIComponent(text)}`);
+            const data = await response.text(); // Assumindo resposta em texto simples
+
+            appendMessage(data, 'bot');
+        } catch (error) {
+            appendMessage("Desculpe, tive um problema ao conectar. Tente novamente.", 'bot');
+            console.error(error);
+        }
+    }
+
+    function appendMessage(text, side) {
+        const div = document.createElement('div');
+        div.className = `msg msg-${side}`;
+        div.innerText = text;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+</script>
 
 </body>
 </html>
