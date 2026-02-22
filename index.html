@@ -206,7 +206,7 @@
         try {
             // Chamada ao seu endpoint
             // Nota: O endpoint foi formatado para incluir o texto do usuário no parâmetro prompt
-            const response = await fetch(`https://bobcrock.pmateiro.workers.dev/prompt=${encodeURIComponent(text)}`);
+            const response = await fetch(`https://bobcrock.pmateiro.workers.dev/?prompt=${encodeURIComponent(text)}`);
             const data = await response.text(); // Assumindo resposta em texto simples
 
             appendMessage(data, 'bot');
