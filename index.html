@@ -23,11 +23,11 @@
       min-height: 200vh; /* Scroll para teste */
     }
 
-    /* --- CHATBOX FIXA (O CORAÇÃO DO PROBLEMA) --- */
+    /* --- CHATBOX FIXA --- */
     #floating-chat {
-      position: fixed !important; /* Força a posição fixa */
+      position: fixed !important;
       bottom: 20px !important;
-      left: 20px !important; /* Lado esquerdo */
+      left: 20px !important;
       width: 320px;
       height: 450px;
       background: var(--panel);
@@ -36,7 +36,7 @@
       box-shadow: 0 10px 50px rgba(0,0,0,0.6);
       display: flex;
       flex-direction: column;
-      z-index: 999999 !important; /* Fica acima de TUDO */
+      z-index: 999999 !important;
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       overflow: hidden;
     }
@@ -47,6 +47,13 @@
       height: 60px !important;
       border-radius: 30px;
       cursor: pointer;
+    }
+
+    /* --- CORREÇÃO: Estilos da área principal movidos para cá --- */
+    .chat-full-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     /* Esconde o conteúdo quando minimizado */
@@ -139,7 +146,7 @@
     
     <div class="chat-icon-launcher" onclick="toggleChat()">💬</div>
 
-    <div class="chat-full-content" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="chat-full-content">
       <div class="chat-header" onclick="toggleChat()">
         <div style="font-weight: 600;"><span class="dot"></span> TecMonkey IA</div>
         <div style="opacity: 0.6;">✕</div>
