@@ -1,209 +1,192 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TecMonkey — Chat Fixo Teste!v1w2</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TecMonkey Serviços de Software Ltda</title>
 
-  <style>
-    :root {
-      --bg: #0b0f1a;
-      --panel: #101a2a;
-      --brand: #4da3ff;
-      --text: #e9eefc;
-      --border: rgba(255,255,255,.1);
-    }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      min-height: 200vh; /* Scroll para teste */
-    }
+<style>
 
-    /* --- CHATBOX FIXA --- */
-    #floating-chat {
-      position: fixed !important;
-      bottom: 20px !important;
-      left: 20px !important;
-      width: 320px;
-      height: 450px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 10px 50px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      z-index: 999999 !important;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      overflow: hidden;
-    }
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#0b0f1a;
+    color:white;
+}
 
-    /* ESTADO MINIMIZADO */
-    #floating-chat.minimized {
-      width: 60px !important;
-      height: 60px !important;
-      border-radius: 30px;
-      cursor: pointer;
-    }
+header{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.8)),
+    url("https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop") center/cover;
+}
 
-    /* --- CORREÇÃO: Estilos da área principal movidos para cá ---- */
-    .chat-full-content {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
+h1{
+    font-size:3rem;
+    margin-bottom:10px;
+}
 
-    /* Esconde o conteúdo quando minimizado */
-    #floating-chat.minimized .chat-full-content {
-      display: none;
-    }
+.subtitle{
+    font-size:1.3rem;
+    color:#9cc9ff;
+    max-width:700px;
+}
 
-    /* Ícone flutuante (Bolinha) */
-    .chat-icon-launcher {
-      display: none;
-      width: 60px;
-      height: 60px;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-    }
-    #floating-chat.minimized .chat-icon-launcher {
-      display: flex;
-    }
+section{
+    padding:80px 10%;
+}
 
-    /* Cabeçalho */
-    .chat-header {
-      padding: 15px;
-      background: rgba(255,255,255,0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      border-bottom: 1px solid var(--border);
-    }
+.section-dark{
+    background:#0f1626;
+}
 
-    /* Área de Mensagens */
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      background: rgba(0,0,0,0.1);
-    }
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:30px;
+}
 
-    .msg {
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      max-width: 80%;
-      line-height: 1.4;
-    }
-    .msg.user { background: var(--brand); color: #000; align-self: flex-end; }
-    .msg.ai { background: rgba(255,255,255,0.1); align-self: flex-start; }
+.card{
+    background:#121a2f;
+    padding:25px;
+    border-radius:12px;
+    transition:.3s;
+}
 
-    /* Input */
-    .chat-footer {
-      padding: 15px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 5px;
-    }
-    .chat-footer input {
-      flex: 1;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      color: white;
-      padding: 8px;
-      border-radius: 8px;
-      outline: none;
-    }
-    .chat-footer button {
-      background: var(--brand);
-      border: none;
-      padding: 8px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
 
-    .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; margin-right: 5px; }
-  </style>
+.card img{
+    width:100%;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+h2{
+    text-align:center;
+    margin-bottom:40px;
+    font-size:2rem;
+}
+
+footer{
+    background:#05070d;
+    text-align:center;
+    padding:30px;
+    font-size:.9rem;
+    color:#bbb;
+}
+
+.highlight{
+    color:#4da3ff;
+}
+
+.contact-link {
+    color: #4da3ff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.contact-link:hover {
+    text-decoration: underline;
+}
+
+</style>
 </head>
+
 <body>
 
-  <div style="padding: 50px; text-align: center;">
-    <h1>TecMonkey Web</h1>
-    <p>O chat deve aparecer no canto inferior <b>ESQUERDO</b>.</p>
-    <p>Se não estiver vendo uma bolinha azul/preta lá, verifique se não há extensões de AdBlock bloqueando o script.</p>
-  </div>
+<header>
+    <h1>TecMonkey</h1>
+    <p class="subtitle">
+        Especialistas em <span class="highlight">cognição computacional</span> e 
+        <span class="highlight">agentes conversacionais inteligentes</span>,
+        criando soluções de software baseadas em Inteligência Artificial
+        para transformar negócios.
+    </p>
+</header>
 
-  <div id="floating-chat" class="minimized">
-    
-    <div class="chat-icon-launcher" onclick="toggleChat()">💬</div>
+<section>
+    <h2>Sobre a Empresa</h2>
+    <p style="max-width:900px;margin:auto;text-align:center;">
+        A TecMonkey Serviços de Software Ltda é uma empresa especialista em cognição computacional
+        e agentes conversacionais. Desenvolvemos soluções baseadas em Inteligência Artificial,
+        automação inteligente e sistemas conversacionais capazes de compreender contexto,
+        executar tarefas e melhorar a experiência digital de clientes e empresas.
+    </p>
+</section>
 
-    <div class="chat-full-content">
-      <div class="chat-header" onclick="toggleChat()">
-        <div style="font-weight: 600;"><span class="dot"></span> TecMonkey IA</div>
-        <div style="opacity: 0.6;">✕</div>
-      </div>
+<section class="section-dark">
+    <h2>Soluções</h2>
 
-      <div id="chat-messages" class="chat-messages">
-        <div class="msg ai">Olá! Sou o assistente da TecMonkey. No que posso ajudar?</div>
-      </div>
+    <div class="cards">
 
-      <form id="chat-form" class="chat-footer">
-        <input id="chat-input" type="text" placeholder="Digite sua dúvida..." autocomplete="off" required>
-        <button type="submit">></button>
-      </form>
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2070&auto=format&fit=crop">
+            <h3>Agentes Conversacionais</h3>
+            <p>Chatbots e assistentes inteligentes integrados a WhatsApp, Web e sistemas corporativos. Solicite uma demonstração em <a href="mailto:contato@tecmonkey.io" class="contact-link">contato@tecmonkey.io</a>.</p>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=2070&auto=format&fit=crop">
+            <h3>Cognição Computacional</h3>
+            <p>Sistemas capazes de interpretar dados, contexto e intenção para tomada de decisão automatizada.</p>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1677756119517-756a188d2d94?q=80&w=2070&auto=format&fit=crop">
+            <h3>Automação Inteligente</h3>
+            <p>Integração entre IA, APIs e processos empresariais para ganho real de produtividade.</p>
+        </div>
+
     </div>
-  </div>
+</section>
 
-  <script>
-    const chatBox = document.getElementById('floating-chat');
-    const chatForm = document.getElementById('chat-form');
-    const chatInput = document.getElementById('chat-input');
-    const chatMessages = document.getElementById('chat-messages');
-    const ENDPOINT = "https://bobcrock.pmateiro.workers.dev/";
+<section>
+    <h2>Diferenciais</h2>
 
-    // Abrir/Fechar
-    function toggleChat() {
-      chatBox.classList.toggle('minimized');
-    }
+    <div class="cards">
+        <div class="card">
+            <h3>⚡ IA aplicada ao negócio</h3>
+            <p>Soluções práticas focadas em resultado e eficiência operacional.</p>
+        </div>
 
-    // Adicionar Mensagem
-    function appendMessage(role, text) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `msg ${role}`;
-      msgDiv.textContent = text;
-      chatMessages.appendChild(msgDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+        <div class="card">
+            <h3>🔗 Integração completa</h3>
+            <p>Conectamos IA com sistemas existentes sem necessidade de grandes mudanças.</p>
+        </div>
 
-    // Envio
-    chatForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const text = chatInput.value.trim();
-      if(!text) return;
+        <div class="card">
+            <h3>🧠 Arquitetura Cognitiva</h3>
+            <p>Uso de modelos avançados de linguagem e agentes autônomos. Saiba mais através de <a href="mailto:contato@tecmonkey.io" class="contact-link">contato@tecmonkey.io</a>.</p>
+        </div>
+    </div>
 
-      appendMessage('user', text);
-      chatInput.value = '';
+</section>
 
-      try {
-        const response = await fetch(`${ENDPOINT}?prompt=${encodeURIComponent(text)}`);
-        const data = await response.json();
-        const reply = data.response || data.output || data.result || "Sem resposta do servidor.";
-        appendMessage('ai', reply);
-      } catch (err) {
-        appendMessage('ai', "⚠️ Erro ao conectar com a IA.");
-        console.error(err);
-      }
-    });
-  </script>
+<section class="section-dark">
+    <h2>Contato</h2>
+    <p style="text-align:center;">
+        Entre em contato para conhecer soluções personalizadas em Inteligência Artificial
+        e automação conversacional através do e-mail: <br>
+        <a href="mailto:contato@tecmonkey.io" class="contact-link" style="font-size: 1.5rem;">contato@tecmonkey.io</a>
+    </p>
+</section>
+
+<footer>
+    <p>
+        TecMonkey Serviços de Software Ltda<br>
+        CNPJ: 37.123.698/0001-42<br>
+        E-mail: contato@tecmonkey.io
+    </p>
+</footer>
 
 </body>
 </html>
