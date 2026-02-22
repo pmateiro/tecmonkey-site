@@ -447,10 +447,26 @@
 
     <section id="contato" class="alt">
       <div class="container">
-        <h2 class="section-title reveal">Contato</h2>
-        <p class="section-desc reveal">
-          Quer uma landing com seu WhatsApp/e-mail e formulário? Eu incluo rapidinho.
-        </p>
+        <div class="chatbox reveal" style="margin-top:22px;">
+  <h3 style="margin:0 0 10px;">Chat (IA)</h3>
+
+  <div id="chat-messages"
+       style="height:260px; overflow:auto; padding:12px; border-radius:12px;
+              border:1px solid rgba(255,255,255,.08);
+              background:rgba(16,26,42,.55);">
+    <div style="color:#b7c3df;">Digite uma pergunta para testar o agente.</div>
+  </div>
+
+  <form id="chat-form" style="display:flex; gap:10px; margin-top:12px;">
+    <input id="chat-input" type="text" placeholder="Ex: O que é um chatbot?"
+           style="flex:1; padding:12px 12px; border-radius:12px;
+                  border:1px solid rgba(255,255,255,.10);
+                  background:rgba(16,26,42,.65); color:#e9eefc; outline:none;">
+    <button class="btn primary" type="submit">Enviar</button>
+  </form>
+
+  <div id="chat-status" style="margin-top:8px; color:#b7c3df; font-size:.9rem;"></div>
+</div>
 
         <div class="cards">
           <div class="card reveal">
@@ -486,5 +502,89 @@
 
     els.forEach(el => io.observe(el));
   </script>
+  <script>
+  // === MINI CHAT -> Worker endpoint ===
+  const ENDPOINT = "https://bobcrock.pmateiro.workers.dev/";
+
+  const form = document.getElementById("chat-form");
+  const input = document.getElementById("chat-input");
+  const messages = document.getElementById("chat-messages");
+  const statusEl = document.getElementById("chat-status");
+
+  function addMsg(role, text) {
+    const wrap = document.createElement("div");
+    wrap.style.margin = "10px 0";
+    wrap.style.padding = "10px 12px";
+    wrap.style.borderRadius = "12px";
+    wrap.style.border = "1px solid rgba(255,255,255,.08)";
+    wrap.style.background = role === "user"
+      ? "rgba(77,163,255,.10)"
+      : "rgba(255,255,255,.04)";
+
+    const who = document.createElement("div");
+    who.style.fontSize = ".85rem";
+    who.style.color = "rgba(233,238,252,.85)";
+    who.style.marginBottom = "6px";
+    who.textContent = role === "user" ? "Você" : "IA";
+
+    const body = document.createElement("div");
+    body.style.whiteSpace = "pre-wrap";
+    body.textContent = text;
+
+    wrap.appendChild(who);
+    wrap.appendChild(body);
+    messages.appendChild(wrap);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  async function askLLM(prompt) {
+    const url = ENDPOINT + "?prompt=" + encodeURIComponent(prompt);
+    const res = await fetch(url, { method: "GET" });
+
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      throw new Error(`HTTP ${res.status} ${t}`.trim());
+    }
+
+    // seu Worker retorna JSON (ex: { received_prompt, response })
+    const data = await res.json();
+
+    // tenta achar o texto de forma robusta (depende do formato do AI.run)
+    // - se for string direta, pega
+    // - se vier em algum campo comum, tenta extrair
+    const r = data?.response;
+
+    if (typeof r === "string") return r;
+
+    // alguns modelos retornam { response: "..."} ou { output_text: "..."} etc
+    if (r?.response && typeof r.response === "string") return r.response;
+    if (r?.output_text && typeof r.output_text === "string") return r.output_text;
+    if (r?.result && typeof r.result === "string") return r.result;
+
+    // fallback: mostra JSON inteiro
+    return JSON.stringify(data, null, 2);
+  }
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const prompt = (input.value || "").trim();
+    if (!prompt) return;
+
+    addMsg("user", prompt);
+    input.value = "";
+    input.focus();
+
+    statusEl.textContent = "Respondendo...";
+    try {
+      const answer = await askLLM(prompt);
+      addMsg("assistant", answer);
+      statusEl.textContent = "";
+    } catch (err) {
+      statusEl.textContent = "Erro ao consultar o endpoint (veja console).";
+      console.error(err);
+      addMsg("assistant", "⚠️ Não consegui consultar o endpoint agora. Verifique CORS / logs do Worker.");
+    }
+  });
+</script>
 </body>
 </html>
